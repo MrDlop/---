@@ -4,12 +4,13 @@ import random
 from PyQt5 import uic
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow
+from Ui import Ui_MainWindow
 
 
-class Example(QMainWindow):
+class Example(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('Ui.ui', self)
+        self.setupUi(self)
         self.do_paint = False
         self.initUI()
 
@@ -33,7 +34,7 @@ class Example(QMainWindow):
             a = random.randint(10, 200)
             qp.setBrush(QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
             qp.drawEllipse(50, 50, a, a)
-            self.do_paint=False
+            self.do_paint = False
 
 
 if __name__ == '__main__':
