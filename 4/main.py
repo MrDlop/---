@@ -1,20 +1,22 @@
 import sqlite3
 import sys
 
-from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QTableWidgetItem
 from pyqt5_plugins.examplebutton import QtWidgets
+from Ui import addEditCoffeeForm
+from Ui import main_int
 
 data = {}
 genreText = ''
 
 
-class PreDialog(QDialog):
+class PreDialog(QDialog, addEditCoffeeForm.Ui_Dialog):
     def __init__(self, parent=None, name=" ", st=" ", type_=" ", op=" ", check=" ", V=" "):
         global data
         super(PreDialog, self).__init__(parent)
         self.parent = parent
-        uic.loadUi('addEditCoffeeForm.ui', self)
+
+        self.setupUi(self)
         self.setWindowTitle('Добавить элемент')
         self.lineEdit_2.setText(name)
         self.lineEdit.setText(st)
@@ -41,10 +43,11 @@ class PreDialog(QDialog):
         self.parent.show()
 
 
-class Example(QMainWindow):
+class Example(QMainWindow, main_int.Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
+
+        self.setupUi(self)
         self.result = []
         self.maxID = 0
         self.initUI()
@@ -59,7 +62,7 @@ class Example(QMainWindow):
         self.tableWidget.setHorizontalHeaderLabels(
             ['ID', 'название сорта', 'степень обжарки', 'молотый/в зернах', 'описание вкуса', 'цена', 'объем упаковки'])
         self.tableWidget.setRowCount(0)
-        con = sqlite3.connect("coffee.sqlite")
+        con = sqlite3.connect("data/coffee.sqlite")
         cur = con.cursor()
         res = list(cur.execute("""SELECT * FROM COFFEE"""))
         for i in range(len(res)):
@@ -75,7 +78,7 @@ class Example(QMainWindow):
         result = dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
             self.maxID += 1
-            con = sqlite3.connect("coffee.sqlite")
+            con = sqlite3.connect("data/coffee.sqlite")
             cur = con.cursor()
             cur.execute(f"""INSERT INTO COFFEE VALUES 
             ({self.maxID}, '{data['название сорта']}', '{data['степень обжарки']}', 
@@ -96,7 +99,7 @@ class Example(QMainWindow):
                            V=self.tableWidget.item(idx, 6).text())
         result = dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
-            con = sqlite3.connect("coffee.sqlite")
+            con = sqlite3.connect("data/coffee.sqlite")
             cur = con.cursor()
             cur.execute(f"""UPDATE COFFEE
                             SET 'название сорта'='{data['название сорта']}', 
