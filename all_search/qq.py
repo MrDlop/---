@@ -33,7 +33,7 @@ def params(obj):
         "ll": ",".join([toponym_longitude, toponym_lattitude]),
         "spn": ",".join([dx, dy]),
         "l": "map",
-        "z": "2",
+        "scale": "3",
         "pt": f"{toponym['Point']['pos'].replace(' ', ',')},round"
     }
     return map_params
