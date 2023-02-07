@@ -63,9 +63,9 @@ def search_name(obj: str,
     toponym = json_response["response"]["GeoObjectCollection"][
         "featureMember"][0]["GeoObject"]
     # coords center
-    toponym_coodrinates = toponym["Point"]["pos"]
+    toponym_coordinates = toponym["Point"]["pos"]
     # latitude and longitude
-    toponym_longitude, toponym_latitude = toponym_coodrinates.split(" ")
+    toponym_longitude, toponym_latitude = toponym_coordinates.split(" ")
 
     tp = [list(map(float, toponym['boundedBy']['Envelope'][i].split())) for i in toponym['boundedBy']['Envelope']]
     dx = str(abs(tp[0][0] - tp[1][0]))
@@ -75,7 +75,7 @@ def search_name(obj: str,
     map_params = {
         "spn": ",".join([dx, dy]),
     }
-    
+
     if point:
         map_params["pt"] = f"{toponym['Point']['pos'].replace(' ', ',')},round"
 
@@ -83,3 +83,24 @@ def search_name(obj: str,
                           scale=scale,
                           type_map=type_map,
                           **map_params)
+
+
+def address_for_coords(coords: str) -> str:
+    """
+    :param coords: coords object
+    :return: full formatted address
+    """
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+
+    geocoder_params = {
+        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+        "geocode": coords,
+        "format": "json"}
+
+    response = requests.get(geocoder_api_server, params=geocoder_params)
+
+    json_response = response.json()
+
+    toponym = json_response["response"]["GeoObjectCollection"][
+        "featureMember"][0]["GeoObject"]
+    return toponym['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
